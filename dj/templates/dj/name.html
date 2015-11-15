@@ -19,7 +19,7 @@
     {{ form.your_name }}
     {% if form.your_name.errors %}
         {% for error in form.your_name.errors %}
-        <div style="color:red;font-size:10pt;font-family:Verdana;padding:5px 5px;width:240px;">{{ error|escape }}</div>
+        <div style="color:red;font-size:10pt;font-family:Verdana;padding:5px 5px;width:100%;">{{ error|escape }}</div>
         {% endfor %}
     {% endif %}
     </div>
@@ -29,7 +29,7 @@
     {{ form.date_field }}
     {% if form.date_field.errors %}
         {% for error in form.date_field.errors %}
-        <div style="color:red;font-size:10pt;font-family:Verdana;padding:5px 5px;width:240px;">{{ error|escape }}</div>
+        <div style="color:red;font-size:10pt;font-family:Verdana;padding:5px 5px;width:100%;">{{ error|escape }}</div>
         {% endfor %}
     {% endif %}
     </div>
@@ -59,8 +59,8 @@
             changeYear: true,
         });
         // $( ".selector" ).datepicker( "option", { dateFormat: 'yy-mm-dd' } );
-        // <input id="id_date_field" name="date_field" type="text" value="2015-11-14" />
-        $( "#id_your_name, #id_date_field" ).addClass('form-control');
+
+        //$( "#id_your_name, #id_date_field" ).addClass('form-control');
     });
 </script>
 {% endblock js_files %}

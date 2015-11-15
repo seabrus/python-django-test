@@ -85,7 +85,7 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('dj:results', args=(p.id,)))
 
-
+from django import forms
 from .forms import NameForm
 
 def get_name(request):
@@ -95,15 +95,21 @@ def get_name(request):
         form = NameForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
+            print 'test = 1', form['your_name'].css_classes()
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
             return HttpResponseRedirect('/dj/thanks/')
+        else:
+            if 'your_name' in form.errors:
+                form.fields['your_name'].widget = forms.TextInput( attrs={'class': 'form-control field-has-error'} )
+            if 'date_field' in form.errors:
+                form.fields['date_field'].widget = forms.DateInput( attrs={'class': 'form-control field-has-error'} )
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = NameForm()
-    
+
     return render(request, 'dj/name.html', {'form': form})
 
 
