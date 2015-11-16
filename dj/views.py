@@ -101,10 +101,10 @@ def get_name(request):
             # redirect to a new URL:
             return HttpResponseRedirect('/dj/thanks/')
         else:
-            if 'your_name' in form.errors:
-                form.fields['your_name'].widget = forms.TextInput( attrs={'class': 'form-control field-has-error'} )
-            if 'date_field' in form.errors:
-                form.fields['date_field'].widget = forms.DateInput( attrs={'class': 'form-control field-has-error'} )
+            for prop in NameForm.base_fields:   #for prop in form.fields:
+                if prop in form.errors:
+                    form.fields[ prop ].widget = getattr(forms, form.fields[ prop ].widget_type)( attrs={'class': 'form-control field-has-error'} )
+                    #e.g.: forms.TextInput( attrs={'class': 'form-control field-has-error'} )
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -113,6 +113,17 @@ def get_name(request):
     return render(request, 'dj/name.html', {'form': form})
 
 
+"""
+            for prop in dir(NameForm):
+                if not prop.startswith('__') and not callable(getattr(NameForm, prop)):
+                    print prop
+                    if prop in form.errors and prop == 'your_name':
+                        form.fields[ prop ].widget = forms.TextInput( attrs={'class': 'form-control field-has-error'} )
 
+            if 'your_name' in form.errors:
+                form.fields['your_name'].widget = forms.TextInput( attrs={'class': 'form-control field-has-error'} )
+            if 'date_field' in form.errors:
+                form.fields['date_field'].widget = forms.DateInput( attrs={'class': 'form-control field-has-error'} )
+"""
 
 
