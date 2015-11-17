@@ -33,7 +33,6 @@ def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'dj/results.html', {'question': question})
 """
-
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -85,32 +84,51 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('dj:results', args=(p.id,)))
 
+
 from django import forms
-from .forms import NameForm
+from django.contrib import messages
+
+from .models import Question
+from .forms import NameForm, QuestionForm
 
 def get_name(request):
-    # if this is a POST request we need to process the form data
+    AjaxFormSet = forms.modelformset_factory(Question, form=QuestionForm)
+
+    # if this is a POST request
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = NameForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            print 'test = 1', form['your_name'].css_classes()
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('/dj/thanks/')
+        if 'your_name' in request.POST:
+            form = NameForm(request.POST)
+            ajax_formset = AjaxFormSet()
+
+            # check whether it's valid:
+            if form.is_valid():
+                return HttpResponseRedirect('/dj/thanks/')
+            else:
+                # Display a list of valid data 
+                for clean_prop in form.cleaned_data:
+                    messages.add_message(request, messages.INFO, clean_prop + ' = ' + unicode(form.cleaned_data[ clean_prop ]))   
+                                                                                                                # str() -- raises UnicodeEncodeError for russian letters
+                    #messages.add_message(request, messages.INFO, clean_prop + ' = ' + form.cleaned_data[ clean_prop ])     # no error, too
+                # Prepare error fields
+                for prop in NameForm.base_fields:   #for prop in form.fields:
+                    if prop in form.errors:
+                        form.fields[ prop ].widget = getattr(forms, form.fields[ prop ].widget_type)( attrs={'class': 'form-control field-has-error'} )
+                            #e.g.: forms.TextInput( attrs={'class': 'form-control field-has-error'} )
+
         else:
-            for prop in NameForm.base_fields:   #for prop in form.fields:
-                if prop in form.errors:
-                    form.fields[ prop ].widget = getattr(forms, form.fields[ prop ].widget_type)( attrs={'class': 'form-control field-has-error'} )
-                    #e.g.: forms.TextInput( attrs={'class': 'form-control field-has-error'} )
+            form = NameForm()
+            ajax_formset = AjaxFormSet(request.POST, request.FILES)
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = NameForm()
+        ajax_formset = AjaxFormSet()
+        #ajax_form = QuestionForm( instance=Question.objects.get(pk=3) )
 
-    return render(request, 'dj/name.html', {'form': form})
+    return render(request, 'dj/name-form/name.html', {'form': form, 'ajax_formset': ajax_formset})
+    #return render(request, 'dj/name-form/name.html', {'form': form, 'ajax_form': ajax_form})
+
 
 
 """
