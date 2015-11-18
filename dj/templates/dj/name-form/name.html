@@ -8,6 +8,7 @@
 {% block content %}
 <div class="row">
     <div class="col-xs-8 col-xs-offset-0 col-sm-5 col-sm-offset-0 col-md-4 col-md-offset-0 col-lg-3 col-lg-offset-0">
+    <h3>Forms and Messages Middleware</h3>
 
 <form action="/dj/your-name/" method="post" novalidate>
     {% csrf_token %}
@@ -17,7 +18,7 @@
     {{ form.your_name }}
     {% if form.your_name.errors %}
         {% for error in form.your_name.errors %}
-        <div style="color:red;font-size:10pt;font-family:Verdana;padding:5px 5px;width:100%;">{{ error|escape }}</div>
+        <div class="form-field-error"> {{ error|escape }} </div>
         {% endfor %}
     {% endif %}
     </div>
@@ -27,7 +28,7 @@
     {{ form.date_field }}
     {% if form.date_field.errors %}
         {% for error in form.date_field.errors %}
-        <div style="color:red;font-size:10pt;font-family:Verdana;padding:5px 5px;width:100%;">{{ error|escape }}</div>
+        <div class="form-field-error"> {{ error|escape }} </div>
         {% endfor %}
     {% endif %}
     </div>
@@ -60,35 +61,52 @@
 
 <div class="row">
     <div class="col-xs-8 col-xs-offset-0 col-sm-5 col-sm-offset-0 col-md-4 col-md-offset-0 col-lg-3 col-lg-offset-0">
-<hr>
-<h3>AJAX Form</h3>
+    <hr>
+    <h3>FormSets and AJAX-driven Forms</h3>
+
 <form action="/dj/your-name/" method="post" novalidate>
     {% csrf_token %}
-    {{ ajax_formset }}
 
-<!--
     {{ ajax_formset.management_form }}
     {% for form in ajax_formset %}
-    <div class="form-group">
+        {{ form.non_field_errors }}
         {% for field in form %}
-            {{ field.label_tag }} {{ field }}
+        <div class="form-group">
+            {% if not field.label == 'Id' %} {{ field.label_tag }} {% endif %}
+            {{ field }}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                <div class="form-field-error"> {{ error|escape }} </div>
+                {% endfor %}
+            {% endif %}
+        </div>
         {% endfor %}
-    </div>
     {% endfor %}
+
+<!--        {{ form.id }}   # <<< IT IS IMPORTANT 
+                {{ form.question_text }} 
+                {{ form.pub_date }}
 -->
-<!--    {{ form.non_field_errors }}
-    {{ form.your_name.label_tag }}<br>
-    {{ form.your_name }}
-    {% if form.your_name.errors %}
-        {% for error in form.your_name.errors %}
-        <div style="color:red;font-size:10pt;font-family:Verdana;padding:5px 5px;width:100%;">{{ error|escape }}</div>
-        {% endfor %}
-    {% endif %}
-    {{ ajax_formset }}
-    {{ ajax_form }}
--->
+<!-- {{ ajax_formset }} -->
 
     <button type="submit" value="Submit" class="btn btn-primary" >Submit AJAX</button>
+</form>
+
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-0 col-sm-5 col-sm-offset-0 col-md-4 col-md-offset-0 col-lg-3 col-lg-offset-0">
+    <hr>
+    <h3>ForeignKey Form</h3>
+
+<form action="/dj/your-name/" method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-group">
+    {{ choice_form }}
+    </div>
+    <button type="submit" value="Submit" class="btn btn-primary" >Press it</button>
 </form>
 
     </div>

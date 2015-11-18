@@ -89,15 +89,22 @@ from django import forms
 from django.contrib import messages
 
 from .models import Question
-from .forms import NameForm, QuestionForm
+from .forms import NameForm, QuestionForm, ChoiceForm
 
 def get_name(request):
-    AjaxFormSet = forms.modelformset_factory(Question, form=QuestionForm)
+    AjaxFormSet = forms.modelformset_factory(Question, form=QuestionForm, can_delete=True)
+    choice_pk = 3
 
     # if this is a POST request
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        if 'your_name' in request.POST:
+        if 'choice_text' in request.POST:
+            choice_form = ChoiceForm(request.POST, instance=Choice.objects.get(pk=choice_pk))
+            if choice_form.is_valid():
+                choice_form.save()
+                return HttpResponseRedirect('/dj/thanks/')
+
+        elif 'your_name' in request.POST:
             form = NameForm(request.POST)
             ajax_formset = AjaxFormSet()
 
@@ -111,22 +118,30 @@ def get_name(request):
                                                                                                                 # str() -- raises UnicodeEncodeError for russian letters
                     #messages.add_message(request, messages.INFO, clean_prop + ' = ' + form.cleaned_data[ clean_prop ])     # no error, too
                 # Prepare error fields
-                for prop in NameForm.base_fields:   #for prop in form.fields:
+                for prop in NameForm.base_fields:   # Another way to do the same:  for prop in form.fields:
                     if prop in form.errors:
                         form.fields[ prop ].widget = getattr(forms, form.fields[ prop ].widget_type)( attrs={'class': 'form-control field-has-error'} )
                             #e.g.: forms.TextInput( attrs={'class': 'form-control field-has-error'} )
-
         else:
             form = NameForm()
             ajax_formset = AjaxFormSet(request.POST, request.FILES)
 
+            if ajax_formset.is_valid():
+                ajax_formset.save()
+                return HttpResponseRedirect('/dj/thanks/')
+            else:
+                print 'FormSet is NOT valid'
+
+
     # if a GET (or any other method) we'll create a blank form
     else:
         form = NameForm()
+        #ajax_formset = AjaxFormSet(queryset=Question.objects.filter(pk__lt=2))
         ajax_formset = AjaxFormSet()
         #ajax_form = QuestionForm( instance=Question.objects.get(pk=3) )
+        choice_form = ChoiceForm(instance=Choice.objects.get(pk=choice_pk))
 
-    return render(request, 'dj/name-form/name.html', {'form': form, 'ajax_formset': ajax_formset})
+    return render(request, 'dj/name-form/name.html', {'form': form, 'ajax_formset': ajax_formset, 'choice_form': choice_form})
     #return render(request, 'dj/name-form/name.html', {'form': form, 'ajax_form': ajax_form})
 
 
