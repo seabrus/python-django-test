@@ -1,10 +1,21 @@
 from django.test import TestCase
 
+from django.core.urlresolvers import resolve
+from django.core.urlresolvers import reverse
 import datetime
 from django.utils import timezone
-from django.core.urlresolvers import reverse
 
-from .models import Question
+from . models import Question, Choice
+from . views import get_name
+
+
+class NamePageTest(TestCase):
+    """ 
+    Your-Name page view resolution test
+    """
+    def test_url_resolves_to_get_name_view(self):
+        found = resolve('/dj/your-name/')
+        self.assertEqual(found.func, get_name)
 
 
 def create_question(question_text, days):
@@ -16,7 +27,27 @@ def create_question(question_text, days):
     time = timezone.now() + datetime.timedelta(days=days)
     return Question.objects.create(question_text=question_text, pub_date=time)
 
+def create_choice(choice_text, question_pk=1, votes=0):
+    return Choice.objects.create(choice_text=choice_text, question=Question.objects.get(pk=question_pk), votes=votes)
 
+
+class NameViewTests(TestCase):
+
+    def test_inline_fromset(self):
+        """
+        ChoiceInlineFormSet instance should be present in the responce
+        3 choices are need for other forms in the view
+        """
+        create_question(question_text="Question #1", days=-30)
+        create_choice(choice_text="Choice #1", question_pk=1)
+        create_choice(choice_text="Choice #2", question_pk=1)
+        create_choice(choice_text="Choice #3", question_pk=1)
+        response = self.client.get(reverse('dj:your_name'))
+        self.assertContains(response, 'Choice text inlineFormSet')
+        
+
+
+'''
 class QuestionViewTests(TestCase):
     def test_index_view_with_no_questions(self):
         """
@@ -94,4 +125,4 @@ class QuestionIndexDetailTests(TestCase):
         response = self.client.get(reverse('dj:detail', args=(past_question.id,)))
         self.assertContains(response, past_question.question_text, status_code=200)
 
-
+'''

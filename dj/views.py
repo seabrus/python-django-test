@@ -91,9 +91,20 @@ from django.contrib import messages
 from .models import Question
 from .forms import NameForm, QuestionForm, ChoiceForm
 
+
 def get_name(request):
     AjaxFormSet = forms.modelformset_factory(Question, form=QuestionForm, can_delete=True)
     choice_pk = 3
+
+    ChoiceInlineFormSet = forms.inlineformset_factory(Question, Choice, fields=('choice_text', 'votes',), widgets = { 
+            'choice_text': forms.TextInput(attrs = {'class': 'form-control', 'placeholder': 'e.g., in London'}),
+            'votes': forms.NumberInput(attrs = {'class': 'form-control', 'placeholder': '0'}),
+        }, labels = { 
+            'choice_text': 'Choice text inlineFormSet',
+        }, 
+        extra=1)
+    question = Question.objects.get(pk=1)
+    choice_inline_formset = ChoiceInlineFormSet(instance=question)
 
     # if this is a POST request
     if request.method == 'POST':
@@ -107,6 +118,7 @@ def get_name(request):
         elif 'your_name' in request.POST:
             form = NameForm(request.POST)
             ajax_formset = AjaxFormSet()
+            choice_form = ChoiceForm(instance=Choice.objects.get(pk=choice_pk))
 
             # check whether it's valid:
             if form.is_valid():
@@ -122,9 +134,11 @@ def get_name(request):
                     if prop in form.errors:
                         form.fields[ prop ].widget = getattr(forms, form.fields[ prop ].widget_type)( attrs={'class': 'form-control field-has-error'} )
                             #e.g.: forms.TextInput( attrs={'class': 'form-control field-has-error'} )
-        else:
+
+        elif 'form-0-question_text' in request.POST:
             form = NameForm()
             ajax_formset = AjaxFormSet(request.POST, request.FILES)
+            choice_form = ChoiceForm(instance=Choice.objects.get(pk=choice_pk))
 
             if ajax_formset.is_valid():
                 ajax_formset.save()
@@ -132,6 +146,17 @@ def get_name(request):
             else:
                 print 'FormSet is NOT valid'
 
+        else:
+            form = NameForm()
+            ajax_formset = AjaxFormSet()
+            choice_form = ChoiceForm(instance=Choice.objects.get(pk=choice_pk))
+            choice_inline_formset = ChoiceInlineFormSet(request.POST, request.FILES, instance=question)
+
+            if choice_inline_formset.is_valid():
+                choice_inline_formset.save()
+                return HttpResponseRedirect('/dj/thanks/')
+            else:
+                print 'ChoiceInlineFormSet is NOT valid'
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -141,9 +166,8 @@ def get_name(request):
         #ajax_form = QuestionForm( instance=Question.objects.get(pk=3) )
         choice_form = ChoiceForm(instance=Choice.objects.get(pk=choice_pk))
 
-    return render(request, 'dj/name-form/name.html', {'form': form, 'ajax_formset': ajax_formset, 'choice_form': choice_form})
-    #return render(request, 'dj/name-form/name.html', {'form': form, 'ajax_form': ajax_form})
-
+    return render(request, 'dj/name-form/name.html', {'form': form, 'ajax_formset': ajax_formset, 'choice_form': choice_form, 'choice_inline_formset': choice_inline_formset})
+ 
 
 
 """
