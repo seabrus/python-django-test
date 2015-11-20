@@ -122,14 +122,18 @@ def get_name(request):
 
             # check whether it's valid:
             if form.is_valid():
-                return HttpResponseRedirect('/dj/thanks/')
+                if request.is_ajax():
+                    return render(request, 'dj/name-form/name-form-partial.html', {'form': form})
+                else:
+                    return HttpResponseRedirect('/dj/thanks/')
             else:
-                # Display a list of valid data 
+                # Prepare a list of valid data to transfer via the Message middleware
                 for clean_prop in form.cleaned_data:
                     messages.add_message(request, messages.INFO, clean_prop + ' = ' + unicode(form.cleaned_data[ clean_prop ]))   
                                                                                                                 # str() -- raises UnicodeEncodeError for russian letters
                     #messages.add_message(request, messages.INFO, clean_prop + ' = ' + form.cleaned_data[ clean_prop ])     # no error, too
-                # Prepare error fields
+
+                # Prepare error fields styles
                 for prop in NameForm.base_fields:   # Another way to do the same:  for prop in form.fields:
                     if prop in form.errors:
                         form.fields[ prop ].widget = getattr(forms, form.fields[ prop ].widget_type)( attrs={'class': 'form-control field-has-error'} )
@@ -166,6 +170,8 @@ def get_name(request):
         #ajax_form = QuestionForm( instance=Question.objects.get(pk=3) )
         choice_form = ChoiceForm(instance=Choice.objects.get(pk=choice_pk))
 
+    if request.is_ajax():
+        return render(request, 'dj/name-form/name-form-partial.html', {'form': form})
     return render(request, 'dj/name-form/name.html', {'form': form, 'ajax_formset': ajax_formset, 'choice_form': choice_form, 'choice_inline_formset': choice_inline_formset})
  
 

@@ -1,46 +1,27 @@
 {% extends 'dj/base.html' %}
+{% load staticfiles %}
 
 {% block title %}Learning Forms{% endblock %}
-
 {% block jquery_ui_css_files %}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 {% endblock %}
 
 
 {% block content %}
+
 <div class="row">
     <div class="col-xs-8 col-xs-offset-0 col-sm-5 col-sm-offset-0 col-md-4 col-md-offset-0 col-lg-3 col-lg-offset-0">
-    <h3>Forms, Messages MW, and AJAX</h3>
+    <h3>Forms, Messages, and AJAX &nbsp;<img src="{% static 'dj/img/loading.gif' %}" style="display:none;" id="loading_gif"></h3>
 
-<form action="/dj/your-name/" method="post" novalidate>
-    {% csrf_token %}
-    <div class="form-group">
-    {{ form.non_field_errors }}
-    {{ form.your_name.label_tag }}<br>
-    {{ form.your_name }}
-    {% if form.your_name.errors %}
-        {% for error in form.your_name.errors %}
-        <div class="form-field-error"> {{ error|escape }} </div>
-        {% endfor %}
-    {% endif %}
+    <div id="name_form_partial">
+        {% include 'dj/name-form/name-form-partial.html' %}
     </div>
-
-    <div class="form-group">
-    {{ form.date_field.label_tag }}<br>
-    {{ form.date_field }}
-    {% if form.date_field.errors %}
-        {% for error in form.date_field.errors %}
-        <div class="form-field-error"> {{ error|escape }} </div>
-        {% endfor %}
-    {% endif %}
-    </div>
-    <button type="submit" value="Submit" class="btn btn-primary" >Submit via AJAX</button>
-</form>
+    <div id="name_form_ajax_message"></div>
 
     </div>
 </div>
 
-<div class="row">
+<div class="row">     <!--   MESSAGE   -->
     <div class="col-xs-8 col-xs-offset-0 col-sm-5 col-sm-offset-0 col-md-4 col-md-offset-0 col-lg-3 col-lg-offset-0">
 
     {% if messages %}
@@ -152,17 +133,6 @@
 {% block jquery_ui_js_files %}
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 {% endblock %}
-{% block js_files %}
-<script>
-    $( document ).ready( function() {
-        $( "#id_date_field" ).datepicker({
-            dateFormat: 'yy-mm-dd',
-            changeMonth: true,
-            changeYear: true,
-        });
-        // $( ".selector" ).datepicker( "option", { dateFormat: 'yy-mm-dd' } );
-
-        //$( "#id_your_name, #id_date_field" ).addClass('form-control');
-    });
-</script>
-{% endblock js_files %}
+{% block page_js_files %}
+    <script src="{% static 'dj/name-form.js' %}"></script>
+{% endblock %}
