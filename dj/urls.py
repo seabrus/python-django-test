@@ -1,11 +1,15 @@
 from django.conf.urls import url
-#from django.views.generic import TemplateView
 from django.views.generic.base import TemplateView
+from django.contrib.auth import views as auth_views
 
 from . import views
 
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='dj_index'),
+
+    url(r'^login/$', auth_views.login, {'template_name': 'dj/login.html'}, name='login'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
+
     url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
     url(r'^(?P<pk>[0-9]+)/results/$', views.ResultsView.as_view(), name='results'),
     url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
