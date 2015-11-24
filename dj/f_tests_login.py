@@ -52,8 +52,14 @@ class LoginTest(unittest.TestCase):
 
 
 
+if __name__ == '__main__':
+    unittest.main()
 
-    """
+
+
+"""
+        >>>   E X A M P L E S
+
         header_text = self.browser.find_element_by_tag_name('h3').text
         self.assertIn('Forms, Messages, and AJAX', header_text)
 
@@ -106,20 +112,33 @@ class LoginTest(unittest.TestCase):
         self.browser.implicitly_wait(5)
         with self.assertRaises( NoSuchElementException ):
             error_div = self.browser.find_element_by_class_name('form-field-error')
-    """
 
 
 
-
-if __name__ == '__main__':
-    unittest.main()
-
-
-"""
 driver.page_source
+self.browser.current_url
+self.assertRegex(francis_list_url, '/lists/.+')
+
+from django.test import LiveServerTestCase
+      self.browser.get(self.live_server_url)
+
+self.assertContains(response, 'itemey 1')
+   вместо
+assertIn/response.content.decode() dance
+
+self.assertTemplateUsed(response, 'list.html')
+
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
             any(row.text == '1: Buy peacock feathers' for row in rows)
         )
+
+
+from django.test import TestCase
+class SimpleTest(TestCase):
+    def test_index(self):
+        response = self.client.get('/customer/index/')
+        self.assertEqual(response.status_code, 200)
+
 """

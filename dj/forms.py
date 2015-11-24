@@ -70,5 +70,25 @@ class ChoiceForm(ModelForm):
         }
 
 
+# ===============================================================
+#    Log In forms
+# ===============================================================
+from django.contrib.auth.forms import AuthenticationForm
+
+class BSAuthForm(AuthenticationForm):
+    """    
+    class Meta:
+        widgets = { 
+           'username': forms.TextInput(attrs = {'class': 'form-control', 'placeholder': 'e.g., its_me'}),
+           'password': forms.PasswordInput(attrs = {'class': 'form-control'}),
+        }
+    """
+    username = forms.CharField(max_length=254, widget=forms.TextInput(attrs = {'class': 'form-control width60', 'placeholder': 'e.g.: its_me'}))
+    password = forms.CharField( label="Password", widget=forms.PasswordInput(attrs = {'class': 'form-control width60'}) )
+
+
+
+
+
 
 

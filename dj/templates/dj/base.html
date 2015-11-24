@@ -29,11 +29,11 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="{% url 'dj:your_name' %}">Name</a></li>     <!--  class="active" -->
+            <li {% block active_name_item %}{% endblock %}><a href="{% url 'dj:your_name' %}">Name</a></li>     <!--  class="active" -->
             {% if not user.is_authenticated %}
-            <li><a href="{% url 'dj:login' %}?next={{request.path}}">Log In</a></li>
+              <li {% block active_login_item %}{% endblock %}><a href="{% url 'dj:login' %}?next={{request.path}}">Log In</a></li> 
             {% else %}
-            <li><a href="{% url 'dj:logout' %}">Log Out</a></li>
+              <li><a href="{% url 'dj:logout' %}">Log Out</a></li>
             {% endif %}
           </ul>
         </div>
