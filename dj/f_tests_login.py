@@ -48,7 +48,7 @@ class LoginTest(unittest.TestCase):
 
 
 
-        self.fail('GOOD news: Finish the test successfully')
+        self.fail('111: Finish the test successfully')
 
 
 
@@ -120,13 +120,14 @@ self.browser.current_url
 self.assertRegex(francis_list_url, '/lists/.+')
 
 from django.test import LiveServerTestCase
-      self.browser.get(self.live_server_url)
+      self.browser.get( self.live_server_url )     # live_server_url 
 
 self.assertContains(response, 'itemey 1')
    вместо
-assertIn/response.content.decode() dance
+assertIn/response.content.decode()   dance
 
 self.assertTemplateUsed(response, 'list.html')
+
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')

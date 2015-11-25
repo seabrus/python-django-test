@@ -39,7 +39,81 @@ class NamePageTest(TestCase):
         expected_html = render_to_string('dj/name-form/name.html')
         self.assertEqual(response.content.decode(), expected_html)
 
-# EXAMPLES
+
+class NamePageTestDjangoStyle(TestCase):
+    """ 
+    Almost the same as above but with Django TestCase functions
+    """
+    @classmethod
+    def setUpTestData(cls):
+        """   3 choices are need because choice_pk = 3 is used in the view   """
+        create_question(question_text="Question #1", days=-30)
+        create_choice(choice_text="Choice #1", question_pk=1)
+        create_choice(choice_text="Choice #2", question_pk=1)
+        create_choice(choice_text="Choice #3", question_pk=1)
+
+
+    def test_url_resolves_to_correct_view(self):
+        response = self.client.get(reverse('dj:your_name'))
+        self.assertEqual(response.resolver_match.func, get_name)
+
+    def test_correct_templates_are_used(self):
+        response = self.client.get('/dj/your-name/')
+        self.assertTemplateUsed(response, 'dj/name-form/name.html')
+        tmpl_names = [tmpl.name for tmpl in response.templates]
+        print 'Templates used: ', tmpl_names
+        self.assertIn('dj/base.html', tmpl_names) 
+        self.assertIn('dj/name-form/name.html', tmpl_names) 
+        self.assertIn('dj/name-form/name-form-partial.html', tmpl_names) 
+
+    def test_response_has_correct_html(self):
+        response = self.client.get('/dj/your-name/')
+        expected_html = render_to_string('dj/name-form/name.html')
+        self.assertContains(response, '<h3>InlineFormSet - Choices</h3>', html=True)
+
+
+    def test_redirects_after_POST(self):
+        response = self.client.post(
+            reverse('dj:your_name'),
+            data = {'your_name': 'Amy Sara', 'date_field': '2015-11-09'}
+        )
+        self.assertEqual(response.status_code, 302)
+        #self.assertEqual(response['location'], '/dj/thanks/')
+        self.assertRedirects(response, '/dj/thanks/')
+        print 'Response Content-Type =', response['Content-Type']
+
+    def test_AJAX_POST(self):
+        response = self.client.post(
+            reverse('dj:your_name'),
+            data = {'your_name': 'Amy Sara', 'date_field': '2015-11-09'},
+            HTTP_X_REQUESTED_WITH = 'XMLHttpRequest',                        # AJAX request
+        )
+        self.assertTemplateUsed(response, 'dj/name-form/name-form-partial.html', 'Template used ')
+        self.assertEqual(response.status_code, 200)
+        #print 'AJAX-response Location =', response['location']
+        print 'AJAX-response Content-Type =', response['Content-Type']
+
+"""
+>>> MODEL testing example
+
+    saved_list = List.objects.first()
+    self.assertEqual(saved_list, list_)
+
+    saved_items = Item.objects.all()
+    self.assertEqual(saved_items.count(), 2)
+
+    first_saved_item = saved_items[0]
+    second_saved_item = saved_items[1]
+    self.assertEqual(first_saved_item.text, 'The first (ever) list item')
+    self.assertEqual(first_saved_item.list, list_)
+    self.assertEqual(second_saved_item.text, 'Item the second')
+    self.assertEqual(second_saved_item.list, list_)
+"""
+
+
+# SOME EXAMPLES
+# response = self.client.get( '/lists/%d/' % (list_.id,) )                ---   '/lists/%d/' % (list_.id,)
+
 #self.assertTrue(response.content.startswith(b'<html>'))
 #self.assertIn(b'<title>To-Do lists</title>', response.content)
 #self.assertTrue(response.content.strip().endswith(b'</html>'))
@@ -47,9 +121,7 @@ class NamePageTest(TestCase):
 
 class NameViewTests(TestCase):
     def setUp(self):
-        """
-        3 choices are need because choice_pk = 3 is used in the view
-        """
+        """   3 choices are need because choice_pk = 3 is used in the view   """
         create_question(question_text="Question #1", days=-30)
         create_choice(choice_text="Choice #1", question_pk=1)
         create_choice(choice_text="Choice #2", question_pk=1)
