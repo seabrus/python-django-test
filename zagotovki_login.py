@@ -17,9 +17,9 @@ new_user.save()
 #     SEE also:               
 # http://www.tangowithdjango.com/book/chapters/login.html
 # http://www.obeythetestinggoat.com/using-the-built-in-views-and-forms-for-new-user-registration-in-django.html
+
 >>>   forms.py
 from django.contrib.auth.models import User
-
 class UserForm(ModelForm):
     class Meta:
         model = User
@@ -29,7 +29,6 @@ class UserForm(ModelForm):
 from forms import UserForm
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
-
 def adduser(request):
     if request.method == "POST":
         form = UserForm(request.POST)
@@ -40,11 +39,9 @@ def adduser(request):
             return HttpResponseRedirect('main.html')
     else:
         form = UserForm() 
-
     return render(request, 'adduser.html', {'form': form}) 
 
-
->>>   template
+>>>   template 'adduser.html'
 <form method="post" action="">
     {% csrf_token %}
     {{ form }}

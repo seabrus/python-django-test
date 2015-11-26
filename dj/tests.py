@@ -11,7 +11,9 @@ from django.template.loader import render_to_string
 from . models import Question, Choice
 from . views import get_name
 
-
+# ====================================================================
+#   Auxiliary functions
+# ====================================================================
 def create_question(question_text, days):
     """
     Creates a question with the given `question_text` published the given
@@ -25,9 +27,12 @@ def create_choice(choice_text, question_pk=1, votes=0):
     return Choice.objects.create(choice_text=choice_text, question=Question.objects.get(pk=question_pk), votes=votes)
 
 
+# ====================================================================
+#   Tests
+# ====================================================================
 class NamePageTest(TestCase):
     """ 
-    Your-Name page view resolution test
+       The "dj/your_name/" page view resolution test
     """
     def test_url_resolves_to_get_name_view(self):
         found = resolve('/dj/your-name/')
@@ -42,7 +47,7 @@ class NamePageTest(TestCase):
 
 class NamePageTestDjangoStyle(TestCase):
     """ 
-    Almost the same as above but with Django TestCase functions
+    Almost the same as above but with Django's TestCase functions
     """
     @classmethod
     def setUpTestData(cls):
@@ -60,6 +65,7 @@ class NamePageTestDjangoStyle(TestCase):
     def test_correct_templates_are_used(self):
         response = self.client.get('/dj/your-name/')
         self.assertTemplateUsed(response, 'dj/name-form/name.html')
+        # also
         tmpl_names = [tmpl.name for tmpl in response.templates]
         print 'Templates used: ', tmpl_names
         self.assertIn('dj/base.html', tmpl_names) 
@@ -93,8 +99,23 @@ class NamePageTestDjangoStyle(TestCase):
         #print 'AJAX-response Location =', response['location']
         print 'AJAX-response Content-Type =', response['Content-Type']
 
+
+
 """
 >>> MODEL testing example
+def test_saving_and_retrieving_items(self):
+    list_ = List()
+    list_.save()
+
+    first_item = Item()
+    first_item.text = 'The first (ever) list item'
+    first_item.list = list_
+    first_item.save()
+
+    second_item = Item()
+    second_item.text = 'Item the second'
+    second_item.list = list_
+    second_item.save()
 
     saved_list = List.objects.first()
     self.assertEqual(saved_list, list_)

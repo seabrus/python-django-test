@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.views.generic.base import TemplateView
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required, permission_required
 
 from . import views, forms
 
@@ -14,7 +15,8 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
     url(r'^(?P<pk>[0-9]+)/results/$', views.ResultsView.as_view(), name='results'),
     url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
-    url(r'^your-name/$', views.get_name, name='your_name'),
+    #url(r'^your-name/$', views.get_name, name='your_name'),
+    url(r'^your-name/$', login_required(views.get_name, login_url='/dj/login/'), name='your_name'),
     url(r'^thanks/$', TemplateView.as_view(template_name='dj/thanks.html'), name='thanks'),
 ]
 

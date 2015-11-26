@@ -22,3 +22,12 @@ class Choice(models.Model):
 
     def __unicode__(self):
         return self.choice_text
+
+"""
+>>>   EXAMPLES
+
+    created = models.DateTimeField(auto_now_add=True)
+
+
+
+"""
