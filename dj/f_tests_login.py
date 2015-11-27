@@ -57,12 +57,38 @@ if __name__ == '__main__':
 
 
 
-"""
-        >>>   E X A M P L E S
+"""    >>>   CSS and design   tests
 
+class NewVisitorTest(LiveServerTestCase):
+    [...]
+    def test_layout_and_styling(self):
+        # Edith goes to the home page
+        self.browser.get(self.live_server_url)
+        self.browser.set_window_size(1024, 768)
+
+        # She notices the input box is nicely centered
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=5
+        )
+
+"""
+
+
+"""     >>>   My Tests
         header_text = self.browser.find_element_by_tag_name('h3').text
         self.assertIn('Forms, Messages, and AJAX', header_text)
 
+class NamePageTest(unittest.TestCase):
+    def setUp(self):
+        self.browser = webdriver.Firefox()
+        self.browser.implicitly_wait(3)
+    def tearDown(self):
+        self.browser.quit()
+
+    def test_your_name_form(self):
         # Checking name field initials
         inputbox_name = self.browser.find_element_by_id('id_your_name')
         self.assertEqual(
@@ -112,10 +138,11 @@ if __name__ == '__main__':
         self.browser.implicitly_wait(5)
         with self.assertRaises( NoSuchElementException ):
             error_div = self.browser.find_element_by_class_name('form-field-error')
+"""
 
 
-
-driver.page_source
+"""   >>>   E X A M P L E S
+self.browser.page_source
 self.browser.current_url
 self.assertRegex(francis_list_url, '/lists/.+')
 
@@ -127,13 +154,6 @@ self.assertContains(response, 'itemey 1')
 assertIn/response.content.decode()   dance
 
 self.assertTemplateUsed(response, 'list.html')
-
-
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Buy peacock feathers' for row in rows)
-        )
 
 
 from django.test import TestCase

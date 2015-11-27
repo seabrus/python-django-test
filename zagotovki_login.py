@@ -163,9 +163,8 @@ urlpatterns = patterns('',
 )
 
 # =================================================================
+#   login template
 # =================================================================
-# =================================================================
-
 registration/login.html template you can use as a starting point. It assumes you have a base.html template that defines a content block:
 
 {% extends "base.html" %}
@@ -208,26 +207,11 @@ registration/login.html template you can use as a starting point. It assumes you
 {% endblock %}
 
 
-
-
 {% if user.is_authenticated %}
     <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
 {% else %}
     <p>Welcome, new user. Please log in.</p>
 {% endif %}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -247,3 +231,28 @@ if user is not None:
 else:
     # the authentication system was unable to verify the username and password
     print("The username and password were incorrect.")
+
+
+
+# =================================================================
+#   OAuth2
+# =================================================================
+googlePlusAuthentication.configure({
+    'clientId': '<YOUR_CLIENT_ID>',
+    'scope': ['https://www.googleapis.com/auth/plus.login',
+                'https://www.googleapis.com/auth/userinfo.email',
+                'https://www.googleapis.com/auth/calendar'
+    ]
+});
+
+https://github.com/aellerton/demo-allauth-bootstrap:
+For Authorized Redirect Url: 
+        http://127.0.0.1:8000/accounts/google/login/callback/
+
+
+
+
+
+
+
+
