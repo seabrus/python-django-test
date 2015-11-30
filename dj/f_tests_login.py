@@ -21,7 +21,7 @@ class LoginTest(unittest.TestCase):
     """
 
     """
-    def test_login_click_in_menu(self):
+    def test_click_login_in_menu(self):
         self.browser.get( PAGE_ADDRESS )
         menu_item = self.browser.find_element_by_css_selector( '[href$="login/"]' )
         menu_item.click()
@@ -47,9 +47,7 @@ class LoginTest(unittest.TestCase):
         logout_menu_item = self.browser.find_element_by_css_selector( '[href*="logout"]' )
 
 
-
         self.fail('111: Finish the test successfully')
-
 
 
 if __name__ == '__main__':
@@ -57,7 +55,7 @@ if __name__ == '__main__':
 
 
 
-"""    >>>   CSS and design   tests
+"""    >>>   CSS and design   test examples
 
 class NewVisitorTest(LiveServerTestCase):
     [...]
@@ -73,6 +71,32 @@ class NewVisitorTest(LiveServerTestCase):
             512,
             delta=5
         )
+"""
+
+
+"""    >>>   Deployment   test examples
+
+import sys
+[...]
+class NewVisitorTest(StaticLiveServerTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                cls.server_url = 'http://' + arg.split('=')[1]
+                return
+        super().setUpClass()
+        cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super().tearDownClass()
+
+    def setUp(self):
+        [...]
+
 
 """
 
@@ -144,16 +168,18 @@ class NamePageTest(unittest.TestCase):
 """   >>>   E X A M P L E S
 self.browser.page_source
 self.browser.current_url
-self.assertRegex(francis_list_url, '/lists/.+')
 
 from django.test import LiveServerTestCase
       self.browser.get( self.live_server_url )     # live_server_url 
+
+class NewVisitorTest(StaticLiveServerTestCase):   cls.server_url
 
 self.assertContains(response, 'itemey 1')
    вместо
 assertIn/response.content.decode()   dance
 
 self.assertTemplateUsed(response, 'list.html')
+self.assertRegex(francis_list_url, '/lists/.+')
 
 
 from django.test import TestCase
