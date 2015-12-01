@@ -56,9 +56,20 @@ if __name__ == '__main__':
 
 
 """    >>>   CSS and design   test examples
+http://chimera.labs.oreilly.com/books/1234000000754/ch07.html#_what_to_functionally_test_about_layout_and_style
+
+from django.test import LiveServerTestCase
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 class NewVisitorTest(LiveServerTestCase):
-    [...]
+    def setUp(self):
+        [...]
+
+    def test_can_start_a_list_and_retrieve_it_later(self):
+        # Edith goes to check out its homepage
+        self.browser.get(self.live_server_url)     #       <<< self.live_server_url
+
     def test_layout_and_styling(self):
         # Edith goes to the home page
         self.browser.get(self.live_server_url)
@@ -75,19 +86,20 @@ class NewVisitorTest(LiveServerTestCase):
 
 
 """    >>>   Deployment   test examples
+http://chimera.labs.oreilly.com/books/1234000000754/ch08.html#_as_always_start_with_a_test
 
 import sys
 [...]
 class NewVisitorTest(StaticLiveServerTestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        for arg in sys.argv:
+    @classmethod                        # setUpClass is a similar method to setUp, it's provided by unittest
+    def setUpClass(cls):                #    -- vs. setUpTestData(cls) (it's new as of v. 1.8): 
+        for arg in sys.argv:             # https://docs.djangoproject.com/en/1.8/topics/testing/tools/#django.test.TestCase.setUpTestData
             if 'liveserver' in arg:
                 cls.server_url = 'http://' + arg.split('=')[1]
                 return
         super().setUpClass()
-        cls.server_url = cls.live_server_url
+        cls.server_url = cls.live_server_url                  # and then substitute "server_url" for "live_server_url" in the code
 
     @classmethod
     def tearDownClass(cls):
@@ -167,7 +179,10 @@ class NamePageTest(unittest.TestCase):
 
 """   >>>   E X A M P L E S
 self.browser.page_source
-self.browser.current_url
+page_text = self.browser.find_element_by_tag_name('body').text
+
+francis_list_url = self.browser.current_url
+self.assertRegex(francis_list_url, '/lists/.+')
 
 from django.test import LiveServerTestCase
       self.browser.get( self.live_server_url )     # live_server_url 
@@ -176,11 +191,12 @@ class NewVisitorTest(StaticLiveServerTestCase):   cls.server_url
 
 self.assertContains(response, 'itemey 1')
    вместо
-assertIn/response.content.decode()   dance
+assertIn/response.content.decode(), ...   dance
 
 self.assertTemplateUsed(response, 'list.html')
-self.assertRegex(francis_list_url, '/lists/.+')
 
+self.assertNotEqual(francis_list_url, edith_list_url)
+self.assertNotIn('Buy peacock feathers', page_text)
 
 from django.test import TestCase
 class SimpleTest(TestCase):

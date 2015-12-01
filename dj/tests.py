@@ -47,10 +47,10 @@ class NamePageTest(TestCase):
 
 class NamePageTestDjangoStyle(TestCase):
     """ 
-    Almost the same as above but with Django's TestCase functions
+       Almost the same as above but with Django's TestCase functions
     """
     @classmethod
-    def setUpTestData(cls):
+    def setUpTestData(cls):     # https://docs.djangoproject.com/en/1.8/topics/testing/tools/#django.test.TestCase.setUpTestData , new from v. 1.8
         """   3 choices are need because choice_pk = 3 is used in the view   """
         create_question(question_text="Question #1", days=-30)
         create_choice(choice_text="Choice #1", question_pk=1)
