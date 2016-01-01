@@ -33,6 +33,7 @@ def create_choice(choice_text, question_pk=1, votes=0):
 class NamePageTest(TestCase):
     """ 
        The "dj/your_name/" page view resolution test
+                   ---   OLD STYLE   ---
     """
     def test_url_resolves_to_get_name_view(self):
         found = resolve('/dj/your-name/')

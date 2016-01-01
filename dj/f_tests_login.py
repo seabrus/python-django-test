@@ -1,39 +1,43 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
 import unittest
+from unittest import skip
 
 PAGE_ADDRESS = 'http://127.0.0.1:8000'
 
 
 class LoginTest(unittest.TestCase):
+    __name__ = 'foo'     # for the "skip" decorator: http://stackoverflow.com/questions/22204660/python-mock-wrapsf-problems
     def setUp(self):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
     def tearDown(self):
         self.browser.quit()
 
-    """
+    @skip
     def test_login_menu_presence(self):
         self.browser.get( PAGE_ADDRESS )
         self.assertIn('Log In', self.browser.page_source)
-    """
+        self.fail('Success:  test_login_menu_presence  is passed')
 
-    """
+    @skip
     def test_click_login_in_menu(self):
         self.browser.get( PAGE_ADDRESS )
-        menu_item = self.browser.find_element_by_css_selector( '[href$="login/"]' )
-        menu_item.click()
-        self.browser.implicitly_wait(5)
+        login_menu_item = self.browser.find_element_by_css_selector( '[href*="login/"]' )
+        login_menu_item.click()
+        time.sleep(15)
         self.assertIn('Log In Form', self.browser.title)
-    """
+        self.fail('Success:  test_click_login_in_menu  is passed')
+
 
     def test_redirect_after_logging(self):
         self.browser.get( PAGE_ADDRESS )
         login_menu_item = self.browser.find_element_by_css_selector( '[href*="login/"]' )
         login_menu_item.click()
-        self.browser.implicitly_wait(5)
 
         inputbox_username = self.browser.find_element_by_css_selector( '[name="username"]' )
         inputbox_password = self.browser.find_element_by_css_selector( '[name="password"]' )
@@ -41,13 +45,11 @@ class LoginTest(unittest.TestCase):
         inputbox_username.send_keys('sean')
         inputbox_password.send_keys('sean')
         inputbox_password.send_keys(Keys.ENTER)
-        self.browser.implicitly_wait(5)
 
         self.assertIn('Django test', self.browser.title)
         logout_menu_item = self.browser.find_element_by_css_selector( '[href*="logout"]' )
 
-
-        self.fail('111: Finish the test successfully')
+        self.fail('Success:  test_redirect_after_logging  is passed')
 
 
 if __name__ == '__main__':
@@ -55,7 +57,32 @@ if __name__ == '__main__':
 
 
 
-"""    >>>   CSS and design   test examples
+"""   >>>   ESCAPE FUNCTION
+from django.utils.html import escape
+[...]
+        expected_error = escape("You can't have an empty list item")   # => escapes the apostrophe
+        self.assertContains(response, expected_error)
+"""
+
+
+
+"""   >>>   @SKIP
+http://chimera.labs.oreilly.com/books/1234000000754/ch10.html#_skipping_a_test
+from unittest import skip       # skip the test
+[...]
+    __name__ = 'foo'     # for the "skip" decorator: http://stackoverflow.com/questions/22204660/python-mock-wrapsf-problems
+    @skip
+    def test_cannot_add_empty_list_items(self):
+
+"""
+"""   KEYS
+    She hits Enter
+    self.browser.find_element_by_id('id_new_item').send_keys('\n')   # <<< ENTER
+
+"""
+
+
+"""    >>>   CSS and DESIGN   test examples
 http://chimera.labs.oreilly.com/books/1234000000754/ch07.html#_what_to_functionally_test_about_layout_and_style
 
 from django.test import LiveServerTestCase
@@ -85,7 +112,7 @@ class NewVisitorTest(LiveServerTestCase):
 """
 
 
-"""    >>>   Deployment   test examples
+"""    >>>   DEPLOYMENT   test examples
 http://chimera.labs.oreilly.com/books/1234000000754/ch08.html#_as_always_start_with_a_test
 
 import sys
@@ -113,7 +140,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 """
 
 
-"""     >>>   My Tests
+"""     >>>   MY TESTS
         header_text = self.browser.find_element_by_tag_name('h3').text
         self.assertIn('Forms, Messages, and AJAX', header_text)
 
@@ -190,7 +217,7 @@ from django.test import LiveServerTestCase
 class NewVisitorTest(StaticLiveServerTestCase):   cls.server_url
 
 self.assertContains(response, 'itemey 1')
-   вместо
+   instead of
 assertIn/response.content.decode(), ...   dance
 
 self.assertTemplateUsed(response, 'list.html')
