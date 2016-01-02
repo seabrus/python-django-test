@@ -1,3 +1,15 @@
+<!--
+http://chimera.labs.oreilly.com/books/1234000000754/ch11.html#_using_the_form_to_display_errors_in_the_template
+
+        {% if form.errors %}1
+            <div class="form-group has-error">
+                <div class="help-block">{{ form.text.errors }}</div>2
+            </div>
+        {% endif %}
+
+-->
+
+
 <form action="/dj/your-name/" method="post" id="name_form" novalidate>
     {% csrf_token %}
     <div class="form-group">

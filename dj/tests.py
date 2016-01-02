@@ -101,9 +101,40 @@ class NamePageTestDjangoStyle(TestCase):
         print 'AJAX-response Content-Type =', response['Content-Type']
 
 
+"""
+What to Test in Views   ---   
+        http://chimera.labs.oreilly.com/books/1234000000754/ch12.html#_using_the_existing_list_item_form_in_the_list_view
+
+#   >>>   assertIsInstance
+#self.assertIsInstance(response.context['form'], ExistingListItemForm)
+
+#   >>>   assertRedirects
+#self.assertRedirects(response, '/lists/%d/' % (correct_list.id,))
+
+
+
 
 """
->>> MODEL testing example
+
+
+#   >>>   S O M E   E X A M P L E S
+# self.browser.find_element_by_css_selector('input[name=email]').get_attribute('placeholder')   <=   get_attribute
+
+# response = self.client.get( '/lists/%d/' % (list_.id,) )                ---   '/lists/%d/' % (list_.id,)
+
+#self.assertTrue(response.content.startswith(b'<html>'))
+#self.assertIn(b'<title>To-Do lists</title>', response.content)
+#self.assertTrue(response.content.strip().endswith(b'</html>'))
+
+#   >>>   MultiLineEqual
+# http://chimera.labs.oreilly.com/books/1234000000754/ch11.html#_using_the_form_in_a_view_with_a_get_request
+#self.assertMultiLineEqual(response.content.decode(), expected_html) 
+# maxDiff = None   ---   this is required
+
+
+
+"""   
+   >>> MODEL testing example
 def test_saving_and_retrieving_items(self):
     list_ = List()
     list_.save()
@@ -133,12 +164,9 @@ def test_saving_and_retrieving_items(self):
 """
 
 
-# SOME EXAMPLES
-# response = self.client.get( '/lists/%d/' % (list_.id,) )                ---   '/lists/%d/' % (list_.id,)
 
-#self.assertTrue(response.content.startswith(b'<html>'))
-#self.assertIn(b'<title>To-Do lists</title>', response.content)
-#self.assertTrue(response.content.strip().endswith(b'</html>'))
+
+
 
 
 class NameViewTests(TestCase):
